@@ -63,10 +63,21 @@ while True:
 
     # If the button has been pressed
     if button.value():
+
+        # Increase the counter
         count += 1
+
+        # Output a message
         log("You pressed my button {c} times.".format(c = count))
+
+        # Reset the waiting period
         waiting = WAIT_PERIOD
-        sleep(0.5)
+
+        # Sleep a bit (Debounce) - as you press a button it does not go from being Off to On immediatly,
+        # and without a sleep you will see multiple clicks as the buttons flickers between
+        # the two states. This only lasts for a few milliseconds but we need to make sure it has
+        # all gone quiet before listening for another click.
+        sleep(0.25)
 
     # Waiting prompt
     if waiting == 0:
