@@ -8,9 +8,9 @@
 #  Additional functions and helpers for the test scripts.
 #  Mostly formatting and none essential things.
 #
-#  log(text1, text2)		Outputs log text
-#  flash_led(led)			Flashes the LED
-#  splash(title)			Displays a splash screen
+#  log(text1, text2)    Outputs log text
+#  flash_led(led)       Flashes the LED
+#  splash(title)        Displays a splash screen
 #
 #  By           - Matthew Page
 #  Credit       - Everyone who came before and wrote a how to guide
