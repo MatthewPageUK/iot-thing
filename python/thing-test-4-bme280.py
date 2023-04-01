@@ -16,10 +16,11 @@
 #
 from machine import Pin, I2C
 from time import sleep
+from sys import exit
 try:
-    import bme280
+    from vendor_bme280 import BME280
 except ImportError:
-    print("\nPlease save 'bme280.py' file to your Thing before running the test\n\n")
+    print("\nPlease save 'vendor_bme280.py' file to your Thing before running the test\n\n")
     exit(0)
 try:
     from thing_test import log, flash_led, splash
@@ -76,7 +77,7 @@ bmeI2c = I2C(
     freq = BME280_FREQ)
 
 # Create the BME instance with the I2C interface
-bmeSensor = bme280.BME280(i2c = bmeI2c)
+bmeSensor = BME280(i2c = bmeI2c)
 
 # Main program
 splash("BME280 Sensor test")
