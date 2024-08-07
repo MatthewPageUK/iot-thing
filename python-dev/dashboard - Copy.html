@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en" x-data="{
+
+    bricks: [],
+
+    temperatureLow: 20,
+    temperatureHigh: 26,
+    temperature: 23,
+    humidity: 45,
+    humidityLow: 45,
+    humidityHigh: 65,
+    pressure: 1023,
+    pressureStandard: 1013,
+    light: 35000,
+    lightLow: 45000,
+    lightHigh: 60000,
+    time: '10pm',
+    serialNumber: '00001',
+    version: '0.1',
+    age: '3 days 2 hours 13 minutes',
+    networkName: 'mattnet',
+    networkPassword: '1234',
+    polling: 60,
+    redisAccount: 'red1',
+    redisSecret: '12345',
+    apiSecret: 'api123',
+    settingsOpen: false,
+}">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- <meta http-equiv="refresh" content="15" /> -->
+        <title>Matt's Thing</title>
+        <link rel="icon" href="data:,">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/alpinejs" defer></script>
+    </head>
+    <body class="bg-sky-100">
+
+        <div class="p-8 max-w-6xl mx-auto">
+
+            <header>
+                <h1 class="text-center text-2xl pb-8 font-black uppercase text-green-800 sm:text-3xl md:text-4xl lg:text-5xl lg:pb-16">
+                    Matt's Thing
+                    <svg viewBox="0 0 504 504" class="w-16 inline-block sm:w-24 md:w-32 lg:w-64">
+                        <path style="fill:#3A7F0D;" d="M339.772,0c0,0,44.536,108.954-146.337,182.138C89.719,221.893,10.059,323.789,105.173,481.193 c7.877-70.357,41.653-225.485,186.888-260.884c0,0-135.176,50.546-147.117,279.347c69.459,9.752,232.361,16.305,280.726-125.062 C489.536,187.817,339.772,0,339.772,0z"/>
+                        <path style="fill:#49A010;" d="M145.007,498.704c147.456-58.849,254.748-196.71,269.556-361.283C384.418,56.107,339.772,0,339.772,0 s44.536,108.954-146.337,182.138C89.719,221.893,10.059,323.789,105.173,481.193c7.877-70.357,41.653-225.485,186.888-260.884 C292.053,220.31,157.279,270.73,145.007,498.704z"/>
+                    </svg>
+                </h1>
+            </header>
+
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+
+                <!-- Temperature -->
+                <div class="p-4 shadow-lg rounded bg-white text-center">
+                    <h3 class="text-2xl bg-emerald-500 text-white p-4 rounded">Temperature</h3>
+                    <p class="py-4 text-4xl"><span x-text="temperature"></span>&deg;C</p>
+                    <p class="text-center text-sm font-bold text-green-500 fill-green-500" x-bind:class="{{
+                        'text-blue-500 fill-blue-500': temperature < temperatureLow,
+                        'text-red-500 fill-red-500': temperature > temperatureHigh,
+                    }}">
+
+                        <span class="block" x-text="temperature < temperatureLow ? 'It\'s a bit cold' : ( temperature > temperatureHigh ? 'It\'s a bit hot' : 'Good temperature' )"></span>
+                    </p>
+                </div>
+
+                <!-- Pressure -->
+                <div class="p-4 shadow-lg rounded bg-white text-center">
+                    <h3 class="text-2xl bg-emerald-500 text-white p-4 rounded">Pressure</h3>
+                    <p class="py-4 text-4xl"><span x-text="pressure"></span><span class="text-2xl">hPa</span></p>
+                    <p class="text-center text-sm font-bold">
+                        <span class="block" x-text="pressure <= pressureStandard ? 'Low' : 'High'"></span>
+                    </p>
+                </div>
+
+                <!-- Humidity -->
+                <div class="p-4 shadow-lg rounded bg-white text-center">
+                    <h3 class="text-2xl bg-emerald-500 text-white p-4 rounded">Humidity</h3>
+                    <p class="py-4 text-4xl"><span x-text="humidity"></span>&percnt;</p>
+                    <p class="text-center text-sm font-bold text-green-500 fill-green-500" x-bind:class="{{
+                        'text-orange-500 fill-orange-500': humidity < humidityLow,
+                        'text-blue-500 fill-blue-500': humidity > humidityHigh,
+                    }}">
+                        <span class="block" x-text="humidity < humidityLow ? 'It\'s a bit dry' : ( humidity > humidityHigh ? 'It\'s a bit damp' : 'Good humidity' )"></span>
+                    </p>
+                </div>
+
+                <!-- Light -->
+                <div class="p-4 shadow-lg rounded bg-white text-center">
+                    <h3 class="text-2xl bg-emerald-500 text-white p-4 rounded">Light</h3>
+                    <p class="py-4 text-4xl"><span x-text="light"></span></p>
+                    <p class="text-center text-sm font-bold text-gray-500 fill-gray-500">
+                         <span class="block" x-text="light < lightLow ? 'Dark' : ( light > lightHigh ? 'Bright Light' : 'Low light' )"></span>
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="mt-8">
+                <button x-on:click="settingsOpen = true" class="block bg-amber-500 px-4 py-2 rounded-lg uppercase text-white text-sm text-center w-full mb-2 hover:bg-amber-600">Settings</button>
+                <a href="/reboot" class="block bg-amber-500 px-4 py-2 rounded-lg uppercase text-white text-sm text-center w-full hover:bg-amber-600">Reboot</a>
+            </div>
+
+
+            <div x-show="settingsOpen" class="fixed inset-0 p-6 bg-white">
+
+                <h3 class="text-2xl bg-emerald-500 text-white p-4 rounded mb-4">Settings</h3>
+
+                <div class="mb-4">
+                    <label for="wifissid" class="mb-2 text-sm font-bold text-emerald-500">Network name</label>
+                    <input type="text" x-model="networkName" class="w-full border px-4 py-2 rounded-lg" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="wifipassword" class="mb-2 text-sm font-bold text-emerald-500">Network password</label>
+                    <input type="text" x-model="networkPassword" class="w-full border px-4 py-2 rounded-lg" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="polling" class="mb-2 text-sm font-bold text-emerald-500">Polling interval (seconds)</label>
+                    <input type="text" x-model="polling" class="w-full border px-4 py-2 rounded-lg" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="redis" class="mb-2 text-sm font-bold text-emerald-500">Redis account</label>
+                    <input type="text" x-model="redisAccount" class="w-full border px-4 py-2 rounded-lg" />
+                </div>
+
+                <div class="mb-4">
+                    <label for="redissecret" class="mb-2 text-sm font-bold text-emerald-500">Redis account</label>
+                    <input type="text" x-model="redisSecret" class="w-full border px-4 py-2 rounded-lg" />
+                </div>
+
+                <div class="">
+                    <label for="apisecret" class="mb-2 text-sm font-bold text-emerald-500">API Secret</label>
+                    <input type="text" x-model="apiSecret" class="w-full border px-4 py-2 rounded-lg" />
+                </div>
+
+                <div class="mt-16">
+                    <button class="block bg-amber-500 px-4 py-2 rounded-lg uppercase text-white text-sm text-center w-full mb-2 hover:bg-amber-600">Save Settings</button>
+                    <button x-on:click="settingsOpen = false" class="block bg-amber-500 px-4 py-2 rounded-lg uppercase text-white text-sm text-center w-full mb-2 hover:bg-amber-600">Close</button>
+                </div>
+
+                <div class="mt-8 text-xs text-gray-500 border-t pt-8">
+                    <p>Time : <span x-text="time"></span></p>
+                    <p>Serial number : <span x-text="serialNumber"></span></p>
+                    <p>Software version : <span x-text="version"></span></p>
+                    <p>Running since : <span x-text="age"></span></p>
+                </div>
+
+            </div>
+        </div>
+    </body>
+</html>
